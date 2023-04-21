@@ -16,11 +16,11 @@ constants:
 
 resources:
 
-   kocatanmug_name_rsc = "copper pekonch mugs"
+   kocatanmug_name_rsc = "mug of pekonch"
    kocatanmug_icon_rsc = mug2.bgf
    kocatanmug_desc_rsc = \
-      "Wine that is thick enough, you could stand a dagger up in it."
-   kocatanmug_name_plural_rsc = "mugs of Pekonch"
+      "This wine is so thick you could stand a dagger up in it."
+   kocatanmug_name_plural_rsc = "mugs of pekonch"
 
    kocatanmug_disp_name = "pitcher of pekonch"
    kocatanmug_disp_icon = pitcher.bgf
@@ -50,8 +50,8 @@ classvars:
 
 properties:
 
-   viFilling = 10
-   viNutrition = 3
+   viFilling = 8
+   viNutrition = 6
    piNumber = 1
 
 messages:
