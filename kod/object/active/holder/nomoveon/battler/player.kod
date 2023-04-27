@@ -2345,14 +2345,16 @@ messages:
    {
       return;
    }
-
+   
    AddDefaultObjects()
    "Add the objects a player is given when creating a character in newbie zone"
    {
       local iInfo, oSpell, lReagents, lItems, cReagent, iNumber;
 
-      % Give the poor newbie an weapon and a bit of cash.
+      % Give the poor newbie a weapon, a bit of cash,
+      % and a small round shield
       Send(self,@NewHold,#what=Create(&Mace));
+      Send(self,@NewHold,#what=Create(&MetalShield));
       Send(self,@NewHold,#what=Create(&Money,#number=500));
 
       % If player hasn't suicided in last 5 hours, give them cash and prizes!
