@@ -173,6 +173,12 @@ messages:
    CreateTreasure(who=$,corpse=$)
    {
       local oTreasure, iHits;
+
+      % Apparitions, summons, etc, provide no treasure
+      if pbIllusion OR vbSummoned
+      {
+         propagate;
+      }
       
       oTreasure = Create(&LongSword,#corpse=corpse);
       iHits = Bound(Send(oTreasure,@GetHits)/Random(2,4),1,$);
@@ -202,7 +208,8 @@ messages:
          oBody = Create(&DeadBody,#icon=vrDead_icon,#name=vrDead_name,
                         #mob=TRUE,#playername=Send(killer,@GetTrueName),
                         #monstername=vrName,#drawfx=viDead_drawfx,
-                        #PlayerBodyOverlay=vrHeadIcon);
+                        #PlayerBodyOverlay=vrHeadIcon,
+                        #canAnimateCorpse=vbCanAnimateCorpse);
       }
       
       return oBody;

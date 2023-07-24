@@ -26,7 +26,10 @@ resources:
    
    Animate_bad_target = "You can't cast animate on %s%s!"
    Animate_failed_rsc = "%s's corpse remains inanimate on the gound."
+   Animate_failed_invalid_corpse = "You focus your whole will on reanimating %s%s, but nothing seems to happen!"
    Animate_cast_rsc = "%s's corpse pulls itself up off of the ground."
+   Animate_monster_cast_rsc = "The %s's corpse pulls itself up off of the ground."
+   Animate_expire_rsc = "Your control over %s%s fades."
 
    Animate_sound = qanimate.wav
 
@@ -42,8 +45,8 @@ classvars:
    viMana = 20
 
    viSpellExertion = 10
-   viCast_time = 20000
-   viChance_To_Increase = 75
+   viCast_time = 10000
+   viChance_To_Increase = 45
 
    vrSucceed_wav = Animate_sound
 
@@ -71,6 +74,12 @@ messages:
       {
          send(who,@MsgSendUser,#message_rsc=Animate_bad_target,#parm1=send(oTarget,@GetDef),#parm2=send(oTarget,@Getname));
 
+         return FALSE;
+      }
+
+      if NOT Send(oTarget, @CanAnimate)
+      {
+         Send(who, @MsgSendUser, #message_rsc=Animate_failed_invalid_corpse, #parm1=Send(oTarget, @GetDef), #parm2=Send(oTarget, @GetCorpseName));
          return FALSE;
       }
 
@@ -183,11 +192,22 @@ messages:
       iDurationSecs = ( ((iSpellPower/2) + random(25,50)) * MAX_RISEN_CONTROL_SECS/100 );
       send(oRisen,@SetMaster,#oMaster=who,#DurationSecs=iDurationSecs);
       send(oRisen,@SetSummoned,#value=TRUE);
-      Post(oRisen,@ResetBehaviorFlags);  
+      Send(oRisen, @StartEnchantment, #what=self, #time=iDurationSecs * 1000);
+      Post(oRisen,@ResetBehaviorFlags);
 
       send(oRoom,@NewHold,#what=oRisen,#new_row=iRow,#new_col=iCol,#fine_row=iFine_Row,#fine_col=iFine_Col);
 
-      Send(who,@MsgSendUser,#message_rsc=Animate_cast_rsc,#parm1=send(oTarget,@GetCorpseName));
+      % Kinda hackish and gross, but for now, body.kod has no reference to the
+      % creature it belonged to so we have no idea what its definite article
+      % should be
+      if Send(oTarget, @WasPlayer)
+      {
+         Send(who, @MsgSendUser, #message_rsc=Animate_cast_rsc, #parm1=Send(oTarget, @GetCorpseName));
+      }
+      else
+      {
+         Send(who, @MsgSendUser, #message_rsc=Animate_monster_cast_rsc, #parm1=Send(oTarget, @GetCorpseName));
+      }
       
       post(oTarget,@Delete);
 
@@ -196,14 +216,32 @@ messages:
 
    ModifyMonsterBehavior(mob = $)
    {
-      send(mob,@SetBehaviorFlag,#flag=AI_MOVE_FOLLOW_MASTER,#value=TRUE);
-      send(mob,@SetBehaviorFlag,#flag=AI_FIGHT_AGGRESSIVE,#value=FALSE);
-      send(mob,@SetBehaviorFlag,#flag=AI_FIGHT_NEWBIESAFE);
-      send(mob,@SetBehaviorFlag,#flag=AI_FIGHT_MONSTERS);
+      Send(mob, @SetBehaviorFlag, #flag=AI_MOVE_FOLLOW_MASTER,#value=TRUE);
+      Send(mob, @SetBehaviorFlag, #flag=AI_FIGHT_AGGRESSIVE,#value=FALSE);
+      Send(mob, @SetBehaviorFlag, #flag=AI_FIGHT_NEWBIESAFE);
+      Send(mob, @SetBehaviorFlag, #flag=AI_FIGHT_MONSTERS);
 
-      return;      
+      return;
    }
 
+   EndEnchantment(who = $, report = TRUE)
+   {
+      local oMaster;
 
+      oMaster = Send(who, @GetMaster);
+      if report AND oMaster <> $ AND IsClass(oMaster, &User)
+      {
+         Send(oMaster, @MsgSendUser, #message_rsc=Animate_expire_rsc , #parm1=Send(who, @GetDef), #parm2=Send(who, @GetName));
+      }
+
+      if Send(who, @GetHealth) > 0
+      {
+         Send(who, @ResetBehaviorFlags);
+         Send(who, @RevertControl);
+      }
+
+      return;
+   }
+   
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

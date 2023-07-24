@@ -47,6 +47,7 @@ properties:
    pbWas_good_player = FALSE
    pbMob = FALSE
    pbAssassinated = FALSE
+   pbCanAnimateCorpse = FALSE
 
    piDrawfx = 0
 
@@ -66,7 +67,7 @@ messages:
    Constructor(name = $,icon = $,playername = $,good = FALSE, mob=FALSE ,monstername = $,
                inKocatan = FALSE, assassinated = FALSE,drawfx = 0, BodyTranslation = 0,
                LegsTranslation = 0, PlayerBodyOverlay = $, Decomposes=TRUE,
-               DearlyDeparted = $)
+               DearlyDeparted = $, canAnimateCorpse = FALSE)
    {
       vrName = name;
       vrIcon = icon;
@@ -79,6 +80,7 @@ messages:
       piBodyTrans = BodyTranslation;
       piLegsTrans = LegsTranslation;      
       poDearlyDeparted = DearlyDeparted;
+      pbCanAnimateCorpse = canAnimateCorpse;
       piTimeOfDeath = GetTime();
 
       if decomposes
@@ -125,6 +127,10 @@ messages:
 
    GetCorpseName()
    {
+      if (pbMob)
+      {
+         return prMonster_name;
+      }
       return prPlayer_Name;
    }
 
@@ -194,11 +200,16 @@ messages:
       return (NOT pbMob);
    }
 
+   CanAnimate()
+   {
+      return pbCanAnimateCorpse;
+   }
+
    GetObjectFlags()
    {
       if pbMob
       {
-         return LOOK_NO | piDrawfx;
+         return piDrawfx;
       }
       
       return viObject_flags | piDrawfx;

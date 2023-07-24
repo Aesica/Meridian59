@@ -241,7 +241,8 @@ messages:
                     #BodyTranslation=piColor_Translation,
                     #LegsTranslation=piColor_Translation,                    
                     #monstername=vrName,
-                    #PlayerBodyOverlay=vrDead_leaves);
+                    #PlayerBodyOverlay=vrDead_leaves,
+                    #canAnimateCorpse=vbCanAnimateCorpse);
    }
 
 end

@@ -157,6 +157,7 @@ classvars:
    vrDead_name = FactionTroop_dead_name_rsc
 
    viTreasure_type = TID_NONE
+   vbCanAnimateCorpse = TRUE
 
    viSpeed = SPEED_AVERAGE
    viAttack_type = ATCK_WEAP_SLASH
@@ -1071,6 +1072,7 @@ messages:
          #name=vrDead_Name,
          #playername=send(killer,@GetTrueName),
          #mob=TRUE,
+         #canAnimateCorpse=vbCanAnimateCorpse,
          #monstername=FactionTroop_name_rsc,
          #PlayerBodyOverlay=vrDead_Legs,
          #BodyTranslation=(piBody_translations & FACTIONTROOP_TRANSLATION_BODY_MASK)/FACTIONTROOP_TRANSLATION_BODY_MUL,
