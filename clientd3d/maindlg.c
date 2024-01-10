@@ -170,6 +170,7 @@ INT_PTR CALLBACK PreferencesDialogProc(HWND hDlg, UINT message, WPARAM wParam, L
       CheckDlgButton(hDlg, IDC_BOUNCE, config.bounce);
       CheckDlgButton(hDlg, IDC_TOOLBAR, config.toolbar);
       CheckDlgButton(hDlg, IDS_LATENCY0, config.lagbox);
+      CheckDlgButton(hDlg, ID_SPINNING_CUBE, config.spinning_cube);
       CheckDlgButton(hDlg, IDC_PROFANE, config.antiprofane);
       CheckDlgButton(hDlg, IDC_DRAWMAP, config.drawmap);
       CheckDlgButton(hDlg, IDC_MAP_ANNOTATIONS, config.map_annotations);
@@ -188,9 +189,12 @@ INT_PTR CALLBACK PreferencesDialogProc(HWND hDlg, UINT message, WPARAM wParam, L
 
       Trackbar_SetRange(GetDlgItem(hDlg, IDC_SOUND_VOLUME), 0, CONFIG_MAX_VOLUME, FALSE);
       Trackbar_SetRange(GetDlgItem(hDlg, IDC_MUSIC_VOLUME), 0, CONFIG_MAX_VOLUME, FALSE);
+      Trackbar_SetRange(GetDlgItem(hDlg, IDC_AMBIENT_VOLUME), 0, CONFIG_MAX_VOLUME, FALSE);
+
       Trackbar_SetPos(GetDlgItem(hDlg, IDC_SOUND_VOLUME), config.sound_volume);
       Trackbar_SetPos(GetDlgItem(hDlg, IDC_MUSIC_VOLUME), config.music_volume);
-      
+      Trackbar_SetPos(GetDlgItem(hDlg, IDC_AMBIENT_VOLUME), config.ambient_volume);
+
       return TRUE;
 
    case WM_COMMAND:
@@ -227,6 +231,8 @@ INT_PTR CALLBACK PreferencesDialogProc(HWND hDlg, UINT message, WPARAM wParam, L
          temp                 = IsDlgButtonChecked(hDlg, IDS_LATENCY0);
          lagbox_changed = (temp != config.lagbox);
          config.lagbox = temp;
+
+         config.spinning_cube = IsDlgButtonChecked(hDlg, ID_SPINNING_CUBE);
          
          if (IsDlgButtonChecked(hDlg, IDC_MUSIC) != config.play_music)
             UserToggleMusic(config.play_music);
@@ -245,9 +251,8 @@ INT_PTR CALLBACK PreferencesDialogProc(HWND hDlg, UINT message, WPARAM wParam, L
             ResetMusicVolume();
          }
 
-         // Don't need to dynamically update sound volume, because
-         // looping sounds are updated as player moves around.
          config.sound_volume = Trackbar_GetPos(GetDlgItem(hDlg, IDC_SOUND_VOLUME));
+         config.ambient_volume = Trackbar_GetPos(GetDlgItem(hDlg, IDC_AMBIENT_VOLUME));
 
          if( IsDlgButtonChecked( hDlg, IDC_TARGETHALO1 ) == BST_CHECKED )
             config.halocolor = 0;
