@@ -90,6 +90,21 @@ messages:
       propagate;
    }
 
+   CanEnchant(oSpell=$)
+   {
+      local iSpell = Send(oSpell, @GetSpellNum);
+
+      % Don't allow nerudite swords to be enchanted by spells
+      % that modify their damage type (attack type or spell attack type)
+      if (iSpell = SID_HOLY_WEAPON
+         OR iSpell = SID_UNHOLY_WEAPON 
+         OR iSpell = SID_ENCHANT_WEAPON)
+      {
+            return false;
+      }
+
+      return true;
+   }
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
